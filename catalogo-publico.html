@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alo Rico Rico — Catálogo</title>
+<meta name="description" content="Catálogo de Alo Rico Rico. Haz tu pedido por WhatsApp.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--rosa:#ec4899;--azul:#3b82f6;--verde:#16a34a;--rojo:#dc2626;--gris:#6b7280}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#1f2937;min-height:100vh}
+header{background:linear-gradient(135deg,var(--rosa),var(--azul));color:#fff;padding:1.1rem 1rem;text-align:center}
+header h1{font-size:1.4rem;font-weight:800}
+header p{font-size:.8rem;opacity:.92;margin-top:.2rem}
+main{padding:.9rem;max-width:1000px;margin:0 auto;padding-bottom:2rem}
+.buscador{width:100%;padding:.7rem 1rem;border:2px solid #fbcfe8;border-radius:12px;font-size:.95rem;margin-bottom:.9rem;outline:none}
+.cats{display:flex;gap:.4rem;overflow-x:auto;margin-bottom:1rem;padding-bottom:.2rem}
+.cats button{flex:none;padding:.4rem .8rem;border-radius:20px;background:#fff;border:1.5px solid #fbcfe8;color:var(--rosa);font-size:.8rem;font-weight:700;cursor:pointer}
+.cats button.on{background:var(--rosa);color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.prod{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:.8rem;text-align:center}
+.prod .foto{font-size:2.6rem;line-height:1.2}
+.prod .foto img{width:100%;max-width:120px;height:120px;object-fit:contain}
+.prod .n{font-weight:700;font-size:.88rem;margin:.4rem 0 .1rem}
+.prod .cat{font-size:.68rem;color:var(--gris);font-weight:600}
+.prod .p{color:var(--rosa);font-weight:800;font-size:1rem;margin-top:.2rem}
+.prod .pt{font-size:.72rem;color:var(--gris)}
+.prod .st{font-size:.7rem;color:var(--verde);font-weight:700;margin-top:.15rem}
+.prod button{margin-top:.5rem;width:100%;padding:.55rem;border:none;border-radius:10px;background:var(--rosa);color:#fff;font-weight:700;font-size:.85rem;cursor:pointer;min-height:40px}
+.prod.agotado{opacity:.55}
+.prod.agotado .p{color:var(--gris)}
+.prod.agotado button{background:#9ca3af;cursor:default}
+.badge{display:inline-block;font-size:.68rem;font-weight:800;color:#fff;background:var(--rojo);border-radius:8px;padding:.15rem .5rem;margin-top:.35rem}
+.stepper{display:flex;justify-content:center;align-items:center;gap:.7rem;margin-top:.5rem}
+.stepper button{width:38px;min-height:38px;padding:0;margin:0;font-size:1.1rem}
+.stepper span{font-weight:800;font-size:1rem}
+.carrito{position:sticky;bottom:0;background:#fff;box-shadow:0 -2px 12px rgba(0,0,0,.12);padding:.8rem 1rem;display:flex;justify-content:space-between;align-items:center;gap:.6rem;max-width:1000px;margin:0 auto}
+.carrito .t{font-weight:700;font-size:.9rem}
+.carrito .t small{display:block;color:var(--gris);font-weight:600;font-size:.72rem}
+.carrito button{padding:.7rem 1.1rem;border:none;border-radius:12px;background:#25D366;color:#fff;font-weight:800;font-size:.9rem;cursor:pointer;white-space:nowrap}
+.card{background:#fff;border-radius:14px;padding:1rem;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:1rem}
+.card h2{font-size:1rem;margin-bottom:.7rem}
+.margen{font-size:.72rem;color:var(--gris);margin-top:.5rem;line-height:1.45}
+.pedItem{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.5rem 0;border-bottom:1px solid #f3f4f6;font-size:.88rem}
+.mini{display:flex;align-items:center;gap:.5rem}
+.mini button{width:30px;height:30px;border-radius:8px;border:1px solid #fbcfe8;background:#fff;color:var(--rosa);font-weight:800;cursor:pointer}
+.pill{display:inline-block;padding:.45rem .8rem;border-radius:20px;border:1.5px solid #fbcfe8;color:var(--rosa);font-weight:700;font-size:.82rem;margin:.2rem .2rem .2rem 0;cursor:pointer}
+.pill.on{background:var(--rosa);color:#fff}
+.pedTotal{display:flex;justify-content:space-between;font-size:1.05rem;font-weight:800;margin:.8rem 0}
+.pedTotal .rosa{color:var(--rosa)}
+.pedInput{width:100%;padding:.65rem .8rem;border:2px solid #fbcfe8;border-radius:10px;font-size:.92rem;margin:.3rem 0}
+.acc{width:100%;padding:.75rem;border:none;border-radius:12px;background:var(--rosa);color:#fff;font-weight:800;font-size:.95rem;cursor:pointer;margin-top:.5rem}
+.sec{padding:.6rem 1rem;border:2px solid #fbcfe8;border-radius:10px;background:#fff;color:var(--rosa);font-weight:700;cursor:pointer}
+.nota{font-size:.75rem;color:var(--gris);text-align:center;margin:1.2rem .5rem;line-height:1.5}
+.cargando{text-align:center;color:var(--gris);padding:2rem 0}
+.error{background:#fef2f2;border:1.5px solid #fca5a5;color:#991b1b;border-radius:12px;padding:1rem;text-align:center;line-height:1.5}
+</style>
+</head>
+<body>
+<header><h1>🛍️ Alo Rico Rico</h1><p>Catálogo — haz tu pedido por WhatsApp</p></header>
+<main>
+<input class="buscador" id="buscar" placeholder="🔍 Buscar producto..." oninput="filtrar()">
+<div class="cats" id="chips"></div>
+<div id="estado" class="cargando">⏳ Cargando catálogo…</div>
+<div class="grid" id="prods"></div>
+<div id="pedidoBox"></div>
+<p class="nota" id="notaPie"></p>
+</main>
+<div class="carrito" id="carritoBar"></div>
+<script>
+/* Catálogo público de Alo Rico Rico — sin clave, solo productos y pedido.
+   Los datos vienen del JSON público del catálogo (Drive, cualquiera con el enlace).
+   Esta página NO pide ni muestra ventas, ganancias, fondo ni clientes. */
+var DATA_URL='https://drive.usercontent.google.com/download?id=1r6cCU9fQd2ntCGS0uSn5tegAEfh3LzZX&export=download';
+var DATA_URL_ALT='https://drive.google.com/uc?export=download&id=1r6cCU9fQd2ntCGS0uSn5tegAEfh3LzZX';
+var WHATSAPP_PEDIDOS='5358559794'; /* +53 58559794, numero de D.J. para los pedidos */
+var COSTO_DOMICILIO=0; /* D.J.: dime el costo del domicilio y lo pongo aqui */
+var D=null, catF='Todos';
+var carrito={};
+var pedidoPago='efectivo';
+var pedidoEntrega='recoger';
+try{var _c=localStorage.getItem('arr_carrito_pub');if(_c)carrito=JSON.parse(_c)||{};}catch(e){carrito={};}
+function fmt(n){return '$'+Math.round(n).toLocaleString('es');}
+function escA(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function norm(s){return String(s||'').toLowerCase();}
+function emojiDe(p){
+  if(p.foto) return '<img src="'+escA(p.foto)+'" alt="">';
+  var n=norm(p.nombre), c=p.categoria||'';
+  var mapa=[['parranda','🍾'],['ron','🍾'],['cristal','🍺'],['bucanero','🍺'],['malta','🍺'],
+    ['nectar','🧃'],['refresco','🥤'],['picadillo','🥩'],['alitas','🍗'],['salami','🥩'],
+    ['arroz','🍚'],['espagueti','🍝'],['huevo','🥚'],['jabon','🧼'],['detergente','🧴'],
+    ['pasta dental','🪥'],['galleta','🍪'],['caramelo','🍬'],['bombon','🍫'],['confite','🍫'],
+    ['sazon','🌿'],['caldito','🍲'],['comino','🌿'],['vinagre','🍶'],['aceite','🫙'],
+    ['azucar','🍬'],['sal','🧂'],['intima','🩲'],['leche condensada','🥛'],['chococrunch','🍫']];
+  for(var i=0;i<mapa.length;i++){ if(n.indexOf(mapa[i][0])>=0) return mapa[i][1]; }
+  var cat={'Bebidas':'🍺','Cárnicos':'🥩','Condimentos':'🌿','Alimentos':'🍚','Confituras':'🍬','Aseo':'🧼','Varios':'📦'};
+  return cat[c]||'🛍️';
+}
+function precioTxt(p){
+  var t=fmt(p.precio);
+  if(p.unidad && p.unidad!=='unidad') t+=' / '+p.unidad;
+  return t;
+}
+function stockTxt(p){
+  if(!p.disponible) return '';
+  var u=(p.unidad==='Lb'||p.unidad==='kg') ? ' '+p.unidad : '';
+  return p.stock+u+' en stock';
+}
+function cargar(){
+  fetch(DATA_URL,{cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+  .then(function(j){ D=j; pintarChips(); filtrar();
+    var np=document.getElementById('notaPie');
+    if(np) np.textContent='Catálogo actualizado: '+(D.actualizado||'')+' · Los productos agotados se muestran en gris y no se pueden pedir. Los precios pueden cambiar sin aviso.';
+  })
+  .catch(function(){
+    fetch(DATA_URL_ALT,{cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(function(j){ D=j; pintarChips(); filtrar();
+      var np=document.getElementById('notaPie');
+      if(np) np.textContent='Catálogo actualizado: '+(D.actualizado||'')+' · Los productos agotados se muestran en gris y no se pueden pedir.';
+    })
+    .catch(function(){
+      document.getElementById('estado').innerHTML='<div class="error">No se pudo cargar el catálogo ahora mismo.<br>Revisa tu conexión y vuelve a intentarlo.</div>';
+    });
+  });
+}
+function pintarChips(){
+  if(!D) return;
+  var h='<button class="on" data-c="Todos">Todos</button>';
+  for(var i=0;i<D.categorias.length;i++){ h+='<button data-c="'+escA(D.categorias[i])+'">'+escA(D.categorias[i])+'</button>'; }
+  var el=document.getElementById('chips'); el.innerHTML=h;
+  var btns=el.querySelectorAll('button');
+  for(var k=0;k<btns.length;k++){ btns[k].addEventListener('click',function(){ setCat(this.getAttribute('data-c'),this); }); }
+}
+function setCat(c,b){ catF=c; var x=document.querySelectorAll('#chips button'); for(var i=0;i<x.length;i++) x[i].classList.remove('on'); b.classList.add('on'); filtrar(); }
+function filtrar(){
+  if(!D) return;
+  var q=document.getElementById('buscar').value.toLowerCase();
+  var lista=[];
+  for(var i=0;i<D.productos.length;i++){ var p=D.productos[i];
+    if((catF==='Todos'||p.categoria===catF) && p.nombre.toLowerCase().indexOf(q)>=0) lista.push(i); }
+  var h='';
+  for(var j=0;j<lista.length;j++){
+    var i=lista[j], p=D.productos[i], c=carrito[i]||0;
+    var ctrl;
+    if(!p.disponible){
+      ctrl='<button disabled>Agotado</button>';
+    } else if(c===0){
+      ctrl='<button data-add="'+i+'">＋ Añadir</button>';
+    } else {
+      ctrl='<div class="stepper"><button data-i="'+i+'" data-d="-1">−</button><span>'+c+'</span><button data-i="'+i+'" data-d="1">+</button></div>';
+    }
+    h+='<div class="prod'+(p.disponible?'':' agotado')+'"><div class="foto">'+emojiDe(p)+'</div>'
+      +'<div class="n">'+escA(p.nombre)+'</div><span class="cat">'+escA(p.categoria)+'</span>'
+      +'<div class="p">'+precioTxt(p)+'</div>'
+      +'<div class="pt">Transf: '+fmt(p.precio_transf)+'</div>'
+      +(p.disponible?'<div class="st">'+stockTxt(p)+'</div>':'<span class="badge">AGOTADO</span>')
+      +ctrl+'</div>';
+  }
+  if(!h) h='<p class="margen">Sin resultados</p>';
+  document.getElementById('prods').innerHTML=h;
+  document.getElementById('estado').innerHTML='';
+  pintarCarrito();
+}
+function guardarCarrito(){ try{ localStorage.setItem('arr_carrito_pub',JSON.stringify(carrito)); }catch(e){} }
+function cambiarCant(i,d){
+  if(!D||!D.productos[i]||!D.productos[i].disponible) return;
+  var stock=D.productos[i].stock||0, c=(carrito[i]||0)+d;
+  if(c<0) c=0; if(c>stock) c=stock;
+  if(c===0) delete carrito[i]; else carrito[i]=c;
+  guardarCarrito(); filtrar();
+  var pb=document.getElementById('pedidoBox');
+  if(pb && pb.innerHTML!=='') verPedido(false);
+}
+function numCarrito(){ var n=0; for(var k in carrito) n+=carrito[k]; return n; }
+function totalesCarrito(){
+  var ef=0, tr=0;
+  for(var k in carrito){ var p=D.productos[k]; if(!p) continue; ef+=p.precio*carrito[k]; tr+=p.precio_transf*carrito[k]; }
+  return {ef:ef, tr:tr};
+}
+function pintarCarrito(){
+  var bar=document.getElementById('carritoBar'); if(!bar) return;
+  var n=numCarrito();
+  if(n===0){ bar.innerHTML=''; return; }
+  var t=totalesCarrito();
+  bar.innerHTML='<div class="t">🛒 Tu pedido: '+n+' producto'+(n>1?'s':'')+'<small>Total '+fmt(t.ef)+' · Efectivo</small></div>'
+    +'<button onclick="verPedido(true)">📲 Pedir por WhatsApp</button>';
+}
+function verPedido(sc){
+  var box=document.getElementById('pedidoBox'); if(!box||!D) return;
+  if(numCarrito()===0){ box.innerHTML=''; return; }
+  var nomV='', notaV='';
+  var _n=document.getElementById('pedNombre'); if(_n) nomV=_n.value;
+  var _t=document.getElementById('pedNota'); if(_t) notaV=_t.value;
+  var h='<div class="card"><h2>🧾 Tu pedido</h2>';
+  for(var k in carrito){ var p=D.productos[k]; if(!p) continue;
+    var pu=pedidoPago==='transferencia'?p.precio_transf:p.precio;
+    h+='<div class="pedItem"><div><b>'+escA(p.nombre)+'</b><div class="margen">'+fmt(pu)+' c/u</div></div>'
+      +'<div class="mini"><button onclick="cambiarCant('+k+',-1)">−</button><span>'+carrito[k]+'</span><button onclick="cambiarCant('+k+',1)">+</button></div>'
+      +'<b>'+fmt(pu*carrito[k])+'</b></div>';
+  }
+  h+='<p style="margin:.8rem 0 .3rem;font-weight:700">¿Cómo pagas?</p>';
+  h+='<span class="pill'+(pedidoPago==='efectivo'?' on':'')+'" onclick="setPago(\'efectivo\')">Efectivo</span>';
+  h+='<span class="pill'+(pedidoPago==='transferencia'?' on':'')+'" onclick="setPago(\'transferencia\')">Transferencia (+30%)</span>';
+  h+='<p style="margin:.8rem 0 .3rem;font-weight:700">¿Cómo lo quieres?</p>';
+  h+='<span class="pill'+(pedidoEntrega==='recoger'?' on':'')+'" onclick="setEntrega(\'recoger\')">Lo recojo</span>';
+  h+='<span class="pill'+(pedidoEntrega==='domicilio'?' on':'')+'" onclick="setEntrega(\'domicilio\')">A domicilio'+(COSTO_DOMICILIO>0?' (+'+fmt(COSTO_DOMICILIO)+')':'')+'</span>';
+  var t=totalesCarrito();
+  var base=pedidoPago==='transferencia'?t.tr:t.ef;
+  var fee=pedidoEntrega==='domicilio'?COSTO_DOMICILIO:0;
+  h+='<div class="pedTotal"><span>Total a pagar</span><span class="rosa">'+fmt(base+fee)+'</span></div>';
+  if(pedidoPago==='efectivo') h+='<p class="margen">Por transferencia sería '+fmt(t.tr+fee)+'</p>';
+  else h+='<p class="margen">En efectivo sería '+fmt(t.ef+fee)+'</p>';
+  h+='<input class="pedInput" id="pedNombre" placeholder="Tu nombre" maxlength="60" value="'+escA(nomV)+'">';
+  h+='<input class="pedInput" id="pedNota" placeholder="Nota: ej. lo recojo a las 5" maxlength="120" value="'+escA(notaV)+'">';
+  h+='<button class="acc" onclick="enviarPedido()">Enviar pedido por WhatsApp</button>';
+  h+='<p class="margen" style="margin-top:.6rem">El pedido llega al WhatsApp de Alo Rico Rico. Te confirmamos disponibilidad antes de prepararlo.</p></div>';
+  box.innerHTML=h;
+  if(sc) box.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function setPago(m){ pedidoPago=m; verPedido(false); }
+function setEntrega(e){ pedidoEntrega=e; verPedido(false); }
+function enviarPedido(){
+  var nom=document.getElementById('pedNombre');
+  var nota=document.getElementById('pedNota');
+  var nombre=nom?nom.value.trim():'';
+  if(!nombre){ alert('Escribe tu nombre para enviar el pedido.'); if(nom) nom.focus(); return; }
+  var t=totalesCarrito();
+  var base=pedidoPago==='transferencia'?t.tr:t.ef;
+  var fee=pedidoEntrega==='domicilio'?COSTO_DOMICILIO:0;
+  var lineas=['🛍️ Nuevo pedido — Alo Rico Rico',''];
+  for(var k in carrito){ var p=D.productos[k]; if(!p) continue;
+    var pu=pedidoPago==='transferencia'?p.precio_transf:p.precio;
+    lineas.push('• '+carrito[k]+'x '+p.nombre+' — '+fmt(pu*carrito[k])); }
+  lineas.push('');
+  lineas.push('Pago: '+(pedidoPago==='transferencia'?'Transferencia':'Efectivo'));
+  lineas.push('Entrega: '+(pedidoEntrega==='domicilio'?'Domicilio'+(fee>0?' (+'+fmt(fee)+')':''):'Lo recojo'));
+  lineas.push('Total: '+fmt(base+fee));
+  lineas.push('Cliente: '+nombre);
+  if(nota && nota.value.trim()) lineas.push('Nota: '+nota.value.trim());
+  var url='https://wa.me/'+WHATSAPP_PEDIDOS+'?text='+encodeURIComponent(lineas.join('\n'));
+  window.open(url,'_blank');
+  document.getElementById('pedidoBox').innerHTML='<div class="card"><h2>✅ Pedido enviado</h2><p>Tu pedido se abrió en WhatsApp. Te confirmamos disponibilidad por ahí.</p><button class="sec" style="margin-top:.7rem" onclick="vaciarCarrito()">Vaciar carrito y hacer otro pedido</button></div>';
+}
+function vaciarCarrito(){ carrito={}; guardarCarrito(); var b=document.getElementById('pedidoBox'); if(b) b.innerHTML=''; filtrar(); }
+document.getElementById('prods').addEventListener('click',function(e){
+  var b=e.target.closest?e.target.closest('[data-add],[data-i]'):null;
+  if(!b) return;
+  var add=b.getAttribute('data-add');
+  if(add!==null && add!==''){ cambiarCant(parseInt(add,10),1); return; }
+  var bi=b.getAttribute('data-i');
+  if(bi!==null && bi!==''){ cambiarCant(parseInt(bi,10),parseInt(b.getAttribute('data-d'),10)||0); }
+});
+cargar();
+</script>
+</body>
+</html>
